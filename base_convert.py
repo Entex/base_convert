@@ -81,21 +81,18 @@ def main():
             if char not in BASE_CHARS[:base_from]:
                 raise ValueError(f"Invalid character '{char}' for base {base_from}.")
 
-        # Convert to decimal
-        decimal_value = base_to_decimal(value, base_from)
-
         if base_to.lower() == "all":
             # Print the converted value in all bases from 2 to 64
             print(f"Value {value} in base {base_from} converted to all bases:")
             for b in range(2, 65):
-                converted_value = decimal_to_base(decimal_value, b)
+                converted_value = base_convert(base_from, b, value)
                 print(f"Base {b:2}: {converted_value}")
         else:
             # Convert to the specified base
             base_to = int(base_to)
             if not (2 <= base_to <= 64):
                 raise ValueError("BaseTo must be between 2 and 64.")
-            converted_value = decimal_to_base(decimal_value, base_to)
+            converted_value = base_convert(base_from, base_to, value)
             print(converted_value)
     except ValueError as e:
         print(f"Error: {e}")
