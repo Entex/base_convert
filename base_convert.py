@@ -4,27 +4,29 @@ import sys
 BASE_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/"
 
 def direct_base_conversion(value, base_from, base_to):
-    """Directly convert a number from base_from to base_to."""
+    """Convert a number from base_from to base_to."""
     if base_from < 2 or base_from > 64 or base_to < 2 or base_to > 64:
         raise ValueError("BaseFrom and BaseTo must be between 2 and 64.")
+    
+    # Step 1: Convert input value from `base_from` to decimal (base 10)
+    decimal_value = 0
+    for char in value:
+        if char not in BASE_CHARS[:base_from]:
+            raise ValueError(f"Invalid character {char} for base {base_from}.")
+        decimal_value = decimal_value * base_from + BASE_CHARS.index(char)
 
-    # Convert from base_from to decimal-like representation (integer array)
-    digits = [BASE_CHARS.index(d) for d in value]
+    # Step 2: Convert the decimal value to the target base (`base_to`)
+    if decimal_value == 0:
+        return BASE_CHARS[0]  # Handle the case for "0"
 
-    # Perform the conversion directly to base_to
     result = []
-    while digits:
-        remainder = 0
-        new_digits = []
-        for d in digits:
-            combined = remainder * base_from + d
-            new_digits.append(combined // base_to)
-            remainder = combined % base_to
-        result.append(remainder)
-        digits = [d for d in new_digits if d != 0]  # Remove leading zeros
+    while decimal_value > 0:
+        remainder = decimal_value % base_to
+        result.append(BASE_CHARS[remainder])
+        decimal_value //= base_to
 
-    # Convert result digits to characters
-    return ''.join(BASE_CHARS[d] for d in reversed(result))
+    # Reverse the result to get the correct order
+    return ''.join(reversed(result))
 
 def print_help():
     """Prints the help message."""
